@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WebScanPro – Vulnerability Scanner</title>
+
+<style>
+/* ---------- Global ---------- */
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f5f7fb;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px;
+}
+
+/* ---------- Header ---------- */
+.header {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header p {
+  margin-top: 8px;
+  opacity: 0.9;
+}
+
+/* ---------- Input ---------- */
+.scan-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+
+.scan-box input {
+  width: 70%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.scan-box button {
+  padding: 12px 22px;
+  font-size: 16px;
+  margin-left: 10px;
+  background: #2a5298;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.scan-box button:hover {
+  background: #1e3c72;
+}
+
+/* ---------- Loading ---------- */
+.loading {
+  text-align: center;
+  font-weight: bold;
+  padding: 20px;
+}
+
+/* ---------- Result Cards ---------- */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+/* ---------- Severity Colors ---------- */
+.high { color: #d32f2f; }
+.medium { color: #f57c00; }
+.low { color: #388e3c; }
+
+/* ---------- Code Block ---------- */
+pre {
+  background: #111827;
+  color: #e5e7eb;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 14px;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  text-align: center;
+  margin-top: 40px;
+  opacity: 0.6;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🔐 WebScanPro</h1>
+    <p>AI-Powered Web Vulnerability Scanner</p>
+  </div>
+
+  <!-- Input -->
+  <div class="scan-box">
+    <input id="url" placeholder="Enter target URL (e.g., http://localhost:3000)">
+    <button onclick="runScan()">🚀 Start Scan</button>
+  </div>
+
+  <!-- Output -->
+  <div id="output"></div>
+
+  <div class="footer">
+    © 2025 WebScanPro • Educational Security Scanner
+  </div>
+
+</div>
+
+<script>
+async function runScan() {
+  const url = document.getElementById("url").value;
+  const output = document.getElementById("output");
+
+  if (!url) {
+    alert("Please enter a URL");
+    return;
+  }
+
+  output.innerHTML = `<div class="loading">🔍 Scanning ${url} ...</div>`;
+
+  try {
+    const res = await fetch("/scan", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({url})
+    });
+
+    const data = await res.json();
+
+    output.innerHTML = `
+      <div class="card">
+        <h3>🟥 SQL Injection</h3>
+        <pre>${JSON.stringify(data.sql_injection, null, 2)}</pre>
+      </div>
+
+      <div class="card">
+        <h3>🟧 Cross-Site Scripting (XSS)</h3>
+        <pre>${JSON.stringify(data.xss, null, 2)}</pre>
+      </div>
+
+      <div class="card">
+        <h3>🟦 Authentication & Session</h3>
+        <pre>${JSON.stringify(data.authentication, null, 2)}</pre>
+      </div>
+
+      <div class="card">
+        <h3>🟥 Access Control / IDOR</h3>
+        <pre>${JSON.stringify(data.access_control, null, 2)}</pre>
+      </div>
+    `;
+
+  } catch (err) {
+    output.innerHTML = `<div class="card high">❌ Scan failed. Check backend.</div>`;
+  }
+}
+</script>
+
+</body>
+</html>

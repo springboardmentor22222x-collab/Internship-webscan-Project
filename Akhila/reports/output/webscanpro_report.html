@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebScanPro Security Report</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f4f4f4; }
+        .High { color: red; font-weight: bold; }
+        .Medium { color: orange; font-weight: bold; }
+        .Low { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>WebScanPro – Vulnerability Scan Report</h1>
+
+<p><b>Target:</b> https://github.com/digininja/DVWA-</p>
+<p><b>Scan Date:</b> 2026-01-09 19:45:50</p>
+
+<h2>Summary</h2>
+<ul>
+    <li>Total vulnerabilities: 9</li>
+    <li>High: 1</li>
+    <li>Medium: 1</li>
+    <li>Low: 7</li>
+</ul>
+
+<h2>Detailed Findings</h2>
+
+<table>
+<tr>
+    <th>Vulnerability</th>
+    <th>Affected Endpoint</th>
+    <th>Severity</th>
+    <th>Suggested Mitigation</th>
+</tr>
+
+
+        <tr>
+            <td>Cross-Site Scripting (XSS)</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Medium">Medium</td>
+            <td>Apply output encoding, input validation, and Content Security Policy (CSP)</td>
+        </tr>
+        
+        <tr>
+            <td>SQL Injection</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Low">Low</td>
+            <td>Use parameterized queries and avoid dynamic SQL</td>
+        </tr>
+        
+        <tr>
+            <td>SQL Injection</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Low">Low</td>
+            <td>Use parameterized queries and avoid dynamic SQL</td>
+        </tr>
+        
+        <tr>
+            <td>SQL Injection</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Low">Low</td>
+            <td>Use parameterized queries and avoid dynamic SQL</td>
+        </tr>
+        
+        <tr>
+            <td>SQL Injection</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Low">Low</td>
+            <td>Use parameterized queries and avoid dynamic SQL</td>
+        </tr>
+        
+        <tr>
+            <td>Authentication / Session Management</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Low">Low</td>
+            <td>Use Secure and HttpOnly cookies, proper session expiry, and strong authentication</td>
+        </tr>
+        
+        <tr>
+            <td>Authentication / Session Management</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="High">High</td>
+            <td>Use Secure and HttpOnly cookies, proper session expiry, and strong authentication</td>
+        </tr>
+        
+        <tr>
+            <td>Authentication / Session Management</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Low">Low</td>
+            <td>Use Secure and HttpOnly cookies, proper session expiry, and strong authentication</td>
+        </tr>
+        
+        <tr>
+            <td>Access Control</td>
+            <td>https://github.com/digininja/DVWA-</td>
+            <td class="Low">Low</td>
+            <td>Implement role-based access control and server-side authorization checks</td>
+        </tr>
+        
+
+</table>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+time,endpoint,issue,severity
+2025-12-23T13:38:20.842678,/rest/user/whoami,Vertical Privilege Escalation,High
+2025-12-23T13:38:20.843666,/rest/user/whoami,Horizontal Privilege Escalation,Medium
+2025-12-23T13:38:22.000030,/rest/admin/application-version,Vertical Privilege Escalation,High
+2025-12-23T13:38:22.000030,/rest/admin/application-version,Horizontal Privilege Escalation,Medium

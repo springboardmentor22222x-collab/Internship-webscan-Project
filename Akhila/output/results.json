@@ -1,0 +1,185 @@
+{
+  "timestamp": "2025-12-22T14:24:08.790615Z",
+  "results": {
+    "weak_tests": [
+      {
+        "timestamp": "2025-12-22T14:23:39.583485Z",
+        "test_type": "weak_cred",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password": "admin",
+        "status_code": null,
+        "okay": false,
+        "location": null,
+        "cookies": {},
+        "response_snippet": ""
+      },
+      {
+        "timestamp": "2025-12-22T14:23:40.590983Z",
+        "test_type": "weak_cred",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password": "password",
+        "status_code": null,
+        "okay": false,
+        "location": null,
+        "cookies": {},
+        "response_snippet": ""
+      },
+      {
+        "timestamp": "2025-12-22T14:23:41.611860Z",
+        "test_type": "weak_cred",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password": "123456",
+        "status_code": null,
+        "okay": false,
+        "location": null,
+        "cookies": {},
+        "response_snippet": ""
+      },
+      {
+        "timestamp": "2025-12-22T14:23:42.632480Z",
+        "test_type": "weak_cred",
+        "url": "http://localhost:3000/#/login",
+        "username": "user",
+        "password": "password",
+        "status_code": null,
+        "okay": false,
+        "location": null,
+        "cookies": {},
+        "response_snippet": ""
+      },
+      {
+        "timestamp": "2025-12-22T14:23:43.642806Z",
+        "test_type": "weak_cred",
+        "url": "http://localhost:3000/#/login",
+        "username": "test",
+        "password": "test",
+        "status_code": null,
+        "okay": false,
+        "location": null,
+        "cookies": {},
+        "response_snippet": ""
+      }
+    ],
+    "bruteforce": [
+      {
+        "timestamp": "2025-12-22T14:23:44.673820Z",
+        "test_type": "bruteforce_sim",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password_tried": "123456",
+        "status_code": null,
+        "response_snippet": "",
+        "cookies": {}
+      },
+      {
+        "timestamp": "2025-12-22T14:23:47.722937Z",
+        "test_type": "bruteforce_sim",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password_tried": "password",
+        "status_code": null,
+        "response_snippet": "",
+        "cookies": {}
+      },
+      {
+        "timestamp": "2025-12-22T14:23:50.746876Z",
+        "test_type": "bruteforce_sim",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password_tried": "admin",
+        "status_code": null,
+        "response_snippet": "",
+        "cookies": {}
+      },
+      {
+        "timestamp": "2025-12-22T14:23:53.786647Z",
+        "test_type": "bruteforce_sim",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password_tried": "letmein",
+        "status_code": null,
+        "response_snippet": "",
+        "cookies": {}
+      },
+      {
+        "timestamp": "2025-12-22T14:23:56.794199Z",
+        "test_type": "bruteforce_sim",
+        "url": "http://localhost:3000/#/login",
+        "username": "admin",
+        "password_tried": "qwerty",
+        "status_code": null,
+        "response_snippet": "",
+        "cookies": {}
+      }
+    ],
+    "cookie_analysis": {
+      "cookies": {},
+      "missing_secure": [],
+      "missing_httponly": [],
+      "missing_samesite": [],
+      "session_token_entropy": {}
+    },
+    "session_hijack": {
+      "timestamp": "2025-12-22T14:23:59.842838Z",
+      "test_type": "session_hijack",
+      "login_ok": false,
+      "original_cookies": {},
+      "hijack_result_status": null,
+      "hijack_ok": false,
+      "hijack_response_snippet": ""
+    },
+    "session_fixation": {
+      "timestamp": "2025-12-22T14:23:59.864980Z",
+      "test_type": "session_fixation",
+      "pre_cookies": {
+        "sessionid": "attackersid",
+        "SESSIONID": "attackersid",
+        "sid": "attackersid",
+        "sess": "attackersid",
+        "JSESSIONID": "attackersid"
+      },
+      "post_cookies": {
+        "sessionid": "attackersid",
+        "SESSIONID": "attackersid",
+        "sid": "attackersid",
+        "sess": "attackersid",
+        "JSESSIONID": "attackersid"
+      },
+      "regenerated": {
+        "sessionid": {
+          "pre": "attackersid",
+          "post": "attackersid",
+          "regenerated": false
+        },
+        "SESSIONID": {
+          "pre": "attackersid",
+          "post": "attackersid",
+          "regenerated": false
+        },
+        "sid": {
+          "pre": "attackersid",
+          "post": "attackersid",
+          "regenerated": false
+        },
+        "sess": {
+          "pre": "attackersid",
+          "post": "attackersid",
+          "regenerated": false
+        },
+        "JSESSIONID": {
+          "pre": "attackersid",
+          "post": "attackersid",
+          "regenerated": false
+        }
+      }
+    },
+    "token_scores": {},
+    "anomaly_run_sample": {
+      "rows": 12,
+      "anomalies": 1
+    }
+  }
+}
