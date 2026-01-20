@@ -1,0 +1,22 @@
+<!-- templates/stored.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Stored XSS Demo</h2>
+<form method="post">
+  Name:<br>
+  <input type="text" name="name" /><br><br>
+  Message:<br>
+  <textarea name="message" rows="4" cols="50"></textarea><br><br>
+  <button type="submit">Post</button>
+</form>
+
+<hr>
+<h3>Posts</h3>
+{% for p in messages %}
+  <div class="post">
+    <strong>{{ p.name|safe }}</strong>: <span>{{ p.message|safe }}</span>
+  </div>
+{% else %}
+  <p>No posts yet.</p>
+{% endfor %}
+{% endblock %}

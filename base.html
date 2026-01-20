@@ -1,0 +1,32 @@
+<!-- templates/base.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>XSS + ML Demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a href="{{ url_for('index') }}">Home</a> |
+    <a href="{{ url_for('stored_xss') }}">Stored XSS</a> |
+    <a href="{{ url_for('reflected_xss') }}">Reflected XSS</a>
+  </nav>
+
+  <div class="flash">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, msg in messages %}
+          <li class="{{ category }}">{{ msg }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
