@@ -1,3 +1,0 @@
-url,method,param,benign_value,headers
-http://localhost/DVWA/vulnerabilities/sqli/?id=1,GET,id,1,"{'User-Agent':'webscanpro/1.0'}"
-http://localhost/DVWA/vulnerabilities/sqli/?id=1,POST,submit,Submit,"{'User-Agent':'webscanpro/1.0'}"
