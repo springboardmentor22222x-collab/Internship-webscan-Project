@@ -1,0 +1,63 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>WebScanPro Security Report</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f4; }
+                .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+                h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+                .summary { background-color: #ecf0f1; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+                th { background-color: #34495e; color: white; }
+                tr:nth-child(even) { background-color: #f9f9f9; }
+                .Critical { color: #c0392b; font-weight: bold; }
+                .High { color: #e67e22; font-weight: bold; }
+                .Medium { color: #f1c40f; font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>WebScanPro Vulnerability Report</h1>
+                <div class="summary">
+                    <p><strong>Target:</strong> http://localhost:3000</p>
+                    <p><strong>Scan Date:</strong> 2026-01-03 00:09:39</p>
+                    <p><strong>Total Vulnerabilities Found:</strong> 2</p>
+                </div>
+
+                <h2>Detailed Findings</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Severity</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Suggested Mitigation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        
+                        <tr>
+                            <td>Reflected XSS</td>
+                            <td class="High">High</td>
+                            <td>/#/search</td>
+                            <td>Arbitrary JS execution via search parameter.</td>
+                            <td>Sanitize user input and implement Content Security Policy (CSP).</td>
+                        </tr>
+            
+                        <tr>
+                            <td>Weak Credentials</td>
+                            <td class="High">High</td>
+                            <td>/#/login</td>
+                            <td>Admin password cracked: admin123</td>
+                            <td>Enforce strong password complexity policies.</td>
+                        </tr>
+            
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>
+        
