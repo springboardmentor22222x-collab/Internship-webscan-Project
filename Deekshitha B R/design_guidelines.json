@@ -1,0 +1,144 @@
+{
+  "identity": {
+    "name": "WebScanPro",
+    "aesthetic": "Cyber-Physical Control Room",
+    "emotional_tone": "Authoritative, Secure, Precision, Vigilant",
+    "description": "A professional security dashboard that feels like a high-tech command center. It balances dense data visualization with clarity, using high-contrast neon accents against deep void backgrounds to signal urgency and status."
+  },
+  "typography": {
+    "primary_font": "IBM Plex Sans",
+    "secondary_font": "Manrope",
+    "mono_font": "JetBrains Mono",
+    "usage": {
+      "headings": "IBM Plex Sans, font-semibold, tracking-tight",
+      "body": "Manrope, font-normal, leading-relaxed",
+      "data_display": "JetBrains Mono, font-medium (IPs, Hashes, Logs)",
+      "ui_labels": "IBM Plex Sans, uppercase, tracking-widest, text-xs"
+    },
+    "scale": {
+      "h1": "text-4xl md:text-5xl font-bold tracking-tighter",
+      "h2": "text-3xl font-semibold tracking-tight",
+      "h3": "text-xl font-medium",
+      "body": "text-sm text-muted-foreground",
+      "mono": "text-xs md:text-sm"
+    }
+  },
+  "colors": {
+    "palette": {
+      "background": "#09090b",
+      "surface": "#18181b",
+      "surface_highlight": "#27272a",
+      "border": "#27272a",
+      "primary": "#3b82f6",
+      "secondary": "#f59e0b",
+      "accent": "#10b981",
+      "destructive": "#ef4444",
+      "text_primary": "#fafafa",
+      "text_secondary": "#a1a1aa"
+    },
+    "semantic": {
+      "critical": "#ef4444",
+      "high": "#f97316",
+      "medium": "#eab308",
+      "low": "#3b82f6",
+      "safe": "#10b981",
+      "neutral": "#71717a"
+    },
+    "gradients": {
+      "scan_active": "linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%)",
+      "critical_glow": "0 0 20px rgba(239, 68, 68, 0.3)"
+    }
+  },
+  "layout": {
+    "grid_system": "Control Room Grid",
+    "spacing": {
+      "container_padding": "p-6 md:p-8",
+      "component_gap": "gap-4",
+      "section_gap": "gap-8"
+    },
+    "structure": {
+      "sidebar": "w-64 fixed h-screen border-r border-border bg-background/95 backdrop-blur",
+      "main_content": "ml-64 min-h-screen bg-background",
+      "dashboard_grid": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+    }
+  },
+  "components": {
+    "Card": {
+      "style": "rounded-sm border border-border bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-colors duration-300",
+      "header": "p-4 border-b border-border/50",
+      "content": "p-4"
+    },
+    "Button": {
+      "style": "rounded-sm font-medium tracking-wide transition-all active:scale-95",
+      "variants": {
+        "default": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_10px_rgba(59,130,246,0.2)]",
+        "destructive": "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-[0_0_10px_rgba(239,68,68,0.2)]",
+        "outline": "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        "ghost": "hover:bg-accent hover:text-accent-foreground"
+      }
+    },
+    "Badge": {
+      "style": "rounded-sm px-2 py-0.5 text-xs font-mono uppercase tracking-wider",
+      "variants": {
+        "critical": "bg-red-500/10 text-red-500 border border-red-500/20",
+        "high": "bg-orange-500/10 text-orange-500 border border-orange-500/20",
+        "medium": "bg-yellow-500/10 text-yellow-500 border border-yellow-500/20",
+        "low": "bg-blue-500/10 text-blue-500 border border-blue-500/20"
+      }
+    },
+    "Input": {
+      "style": "rounded-sm bg-background border-input focus:ring-1 focus:ring-primary focus:border-primary font-mono text-sm"
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Use a subtle noise texture overlay on the main background (opacity 0.03) to reduce digital flatness.",
+    "borders": "Use 1px borders with low opacity (10-20%) for structure. Active elements get brighter borders.",
+    "shadows": "Avoid heavy drop shadows. Use 'glow' effects (colored shadows) for active states.",
+    "glassmorphism": "Use backdrop-blur-md for sticky headers and overlays, but keep opacity high (90%+) for legibility."
+  },
+  "motion": {
+    "page_transition": "opacity-0 to opacity-100 duration-300 ease-out",
+    "hover_effects": "translate-y-[-1px] transition-transform duration-200",
+    "loading": "Pulse effects or 'scanning' line animations for progress bars."
+  },
+  "image_urls": {
+    "login_background": {
+      "url": "https://images.unsplash.com/photo-1660836814985-8523a0d713b5?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Abstract digital network texture for login page background",
+      "category": "background"
+    },
+    "report_cover": {
+      "url": "https://images.unsplash.com/photo-1489436969537-cf0c1dc69cba?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Dark electronic device/server room for report cover page",
+      "category": "report"
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. INSTALL FONTS: Add '@fontsource/ibm-plex-sans', '@fontsource/manrope', and '@fontsource/jetbrains-mono' to package.json immediately.",
+    "2. TAILWIND CONFIG: Update tailwind.config.js to use the specific colors defined in 'colors.palette'. Extend the font family theme.",
+    "3. SHADCN OVERRIDES: When using Shadcn components, ALWAYS apply the custom styles defined in 'components'. Do not use the default rounded-md styles.",
+    "4. LAYOUT: Implement the Sidebar Layout structure. The sidebar should be fixed, and main content scrollable.",
+    "5. CHARTS: Use Recharts. Style the tooltips to match the 'Card' style (dark bg, border). Use the semantic colors for data series.",
+    "6. DATA-TESTID: Ensure every interactive element (buttons, inputs, cards) has a unique data-testid attribute."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬🎪🎉🎊🎁🎀🎂🍰🎈🎨🎰💰💵💳🏦💎🪙💸🤑📊📈📉💹🔢🏆🥇 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use sonner for toasts. Sonner component are located in /app/src/components/ui/sonner.tsx"
+  ]
+}
