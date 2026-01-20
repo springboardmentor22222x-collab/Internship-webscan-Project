@@ -1,0 +1,14 @@
+<!-- templates/reflected.html -->
+{% extends "base.html" %}
+{% block content %}
+<h2>Reflected XSS Demo</h2>
+<form method="post">
+  Query: <input type="text" name="q" />
+  <button type="submit">Search</button>
+</form>
+
+<hr>
+{% if q %}
+  <p>Result: {{ q|safe }}</p>
+{% endif %}
+{% endblock %}

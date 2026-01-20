@@ -1,0 +1,334 @@
+
+<html>
+<head>
+<title>Week 7 - AI Security Report</title>
+<style>
+body { font-family: Arial; margin: 20px; }
+h1 { color: #003366; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+th { background-color: #003366; color: white; }
+</style>
+</head>
+<body>
+
+<h1>Week 7 - AI Driven Security Report</h1>
+
+<h2>Executive Summary</h2>
+<p>The security assessment identified a total of 19 vulnerabilities.
+The system currently contains <b>14 Critical</b> and <b>3 High</b> severity risks.
+Immediate remediation is required to prevent exploitation and data compromise.</p>
+<hr>
+
+<h3>Vulnerability Table</h3>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>url</th>
+      <th>param</th>
+      <th>payload</th>
+      <th>resp_len</th>
+      <th>len_diff</th>
+      <th>sql_error_flag</th>
+      <th>resp_time</th>
+      <th>anomaly_score</th>
+      <th>vulnerability</th>
+      <th>endpoint</th>
+      <th>severity</th>
+      <th>risk_score</th>
+      <th>mitigation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>id</td>
+      <td>' OR '1'='1</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.055601</td>
+      <td>0.114627</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>submit</td>
+      <td>' OR '1'='1' --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.030573</td>
+      <td>-0.093786</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>id</td>
+      <td>' OR '1'='1' --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.007222</td>
+      <td>-0.120538</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>id</td>
+      <td>' UNION SELECT NULL --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.016814</td>
+      <td>-0.135660</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>id</td>
+      <td>' AND SLEEP(3) --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.025969</td>
+      <td>-0.161229</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>submit</td>
+      <td>' OR '1'='1</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.023973</td>
+      <td>-0.169515</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>id</td>
+      <td>' AND 1=CAST((SELECT TOP 1 name FROM users) AS INT) --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.004574</td>
+      <td>-0.184760</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>submit</td>
+      <td>' AND SLEEP(3) --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.003823</td>
+      <td>-0.192875</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>submit</td>
+      <td>" OR "a"="a</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.003989</td>
+      <td>-0.195115</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>id</td>
+      <td>" OR "a"="a</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.003795</td>
+      <td>-0.200597</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>submit</td>
+      <td>' AND 1=CAST((SELECT TOP 1 name FROM users) AS INT) --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.003038</td>
+      <td>-0.202097</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>http://localhost/DVWA/vulnerabilities/sqli/?id=1</td>
+      <td>submit</td>
+      <td>' UNION SELECT NULL --</td>
+      <td>295.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.003013</td>
+      <td>-0.204353</td>
+      <td>SQL Injection</td>
+      <td>NaN</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Use prepared statements &amp; validation.</td>
+    </tr>
+    <tr>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>XSS test payload</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>XSS</td>
+      <td>headers</td>
+      <td>High</td>
+      <td>8</td>
+      <td>Sanitize input, escape output, enable CSP.</td>
+    </tr>
+    <tr>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>XSS test payload</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>XSS</td>
+      <td>{'User-Agent':'webscanpro/1.0'}</td>
+      <td>High</td>
+      <td>8</td>
+      <td>Sanitize input, escape output, enable CSP.</td>
+    </tr>
+    <tr>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>XSS test payload</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>XSS</td>
+      <td>{'User-Agent':'webscanpro/1.0'}</td>
+      <td>High</td>
+      <td>8</td>
+      <td>Sanitize input, escape output, enable CSP.</td>
+    </tr>
+    <tr>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Weak session token</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Authentication Issue</td>
+      <td>/login</td>
+      <td>Medium</td>
+      <td>5</td>
+      <td>Enable MFA, session timeout, secure cookies.</td>
+    </tr>
+    <tr>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>No MFA or session timeout</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Authentication Issue</td>
+      <td>/admin</td>
+      <td>Medium</td>
+      <td>5</td>
+      <td>Enable MFA, session timeout, secure cookies.</td>
+    </tr>
+    <tr>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Unauthorized object access</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>IDOR</td>
+      <td>/user/1/edit</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Add access control authorization checks.</td>
+    </tr>
+    <tr>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Direct access without permission</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>IDOR</td>
+      <td>/profile/5</td>
+      <td>Critical</td>
+      <td>10</td>
+      <td>Add access control authorization checks.</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<h3>Severity Chart</h3>
+<img src="severity_chart.png" width="500">
+</body>
+</html>

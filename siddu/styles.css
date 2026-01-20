@@ -1,0 +1,22 @@
+body {
+    font-family: Arial;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+button {
+    padding: 10px 20px;
+    background: #0066cc;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 10px;
+    background: #eee;
+}
